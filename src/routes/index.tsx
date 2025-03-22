@@ -4,7 +4,6 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { RootState } from '../lib/redux/store'
 import MainLayout from '../layout/MainLayout/MainLayout'
 import LoginPage from '../pages/LoginPage'
-import path from 'path'
 import EmployeesPage from '../pages/EmployeesPage'
 import CriteriaPage from '../pages/CriteriaPage'
 
@@ -79,7 +78,7 @@ const Router: React.FC = () => {
       )
     },
     {
-      path: '/criteria',
+      path: '/AssessmentCriteria',
       element: (
         <MainLayout>
           <CriteriaPage />
