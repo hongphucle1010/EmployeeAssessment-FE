@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { Link } from 'react-router-dom'
+=======
+import { Link, useNavigate } from 'react-router-dom'
+>>>>>>> c3ead3662090ddb86f4480760435fdba485bdf6f
 
 import * as yup from 'yup'
 import { useForm, SubmitHandler } from 'react-hook-form'
@@ -15,10 +19,13 @@ const LoginSchema = yup.object().shape({
     .string()
     .trim()
     .required('Password is required')
+<<<<<<< HEAD
     .min(8, 'Password must be at least 8 characters long')
     .matches(/^(?=.*[A-Z])/, 'Password must include at least one uppercase letter')
     .matches(/^(?=.*[0-9])/, 'Password must include at least one digit')
     .matches(/^(?=.*[@$!%?&#^()])/, 'Password must include at least one special character')
+=======
+>>>>>>> c3ead3662090ddb86f4480760435fdba485bdf6f
 })
 
 const LoginForm = () => {
@@ -34,9 +41,17 @@ const LoginForm = () => {
     }
   })
 
+<<<<<<< HEAD
   const onSubmit: SubmitHandler<ILoginForm> = async (data) => {
     try {
       console.log(data)
+=======
+  const navigate = useNavigate()
+
+  const onSubmit: SubmitHandler<ILoginForm> = async (data) => {
+    try {
+      navigate('/')
+>>>>>>> c3ead3662090ddb86f4480760435fdba485bdf6f
     } catch (error) {
       console.error(error)
     }
@@ -59,7 +74,11 @@ const LoginForm = () => {
             placeholder='yourusername'
             {...register('username')}
           />
+<<<<<<< HEAD
           {errors.username && <p className='text-red-500'>{errors.username.message}</p>}
+=======
+          {errors.username && <p className='text-red-500 mt-1'>{errors.username.message}</p>}
+>>>>>>> c3ead3662090ddb86f4480760435fdba485bdf6f
         </div>
         <div className='w-full'>
           <label className='font-semibold text-sm' htmlFor='LoginPassword'>
@@ -72,7 +91,11 @@ const LoginForm = () => {
             placeholder='********'
             {...register('password')}
           />
+<<<<<<< HEAD
           {errors.password && <p className='text-red-500'>{errors.password.message}</p>}
+=======
+          {errors.password && <p className='text-red-500 mt-1'>{errors.password.message}</p>}
+>>>>>>> c3ead3662090ddb86f4480760435fdba485bdf6f
         </div>
         <div className='w-full flex flex-row items-center justify-between'>
           <div className='flex items-center'>
