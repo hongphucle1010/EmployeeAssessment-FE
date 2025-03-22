@@ -1,5 +1,6 @@
 import React from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import LoginForm from '../components/login'
 
 const Router: React.FC = () => {
   const userRoutes = [
@@ -8,6 +9,7 @@ const Router: React.FC = () => {
       element: (
         <div>
           <h1>Home</h1>
+          <LoginForm />
         </div>
       ),
       errorElement: (
