@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 import * as yup from 'yup'
 import { useForm, SubmitHandler } from 'react-hook-form'
@@ -11,10 +11,7 @@ interface ILoginForm {
 
 const LoginSchema = yup.object().shape({
   username: yup.string().trim().required('Username is required'),
-  password: yup
-    .string()
-    .trim()
-    .required('Password is required')
+  password: yup.string().trim().required('Password is required')
 })
 
 const LoginForm = () => {
@@ -30,13 +27,45 @@ const LoginForm = () => {
     }
   })
 
-  const navigate = useNavigate()
-
+  /*
+    request
+    username:
+    password:
+  */
+  /*
+    response
+    token:
+    status:
+    message:
+  */
   const onSubmit: SubmitHandler<ILoginForm> = async (data) => {
     try {
-      navigate('/')
+      console.log('Submitting:', data)
+
+      const response = await fetch('https://login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data) // Chuyển data thành JSON
+      })
+
+      if (!response.ok) {
+        alert(`Login failed: ${response.status} ${response.statusText}`)
+        throw new Error(`Login failed: ${response.status} ${response.statusText}`)
+      }
+
+      const res = await response.json()
+      console.log('Response:', res)
+      if (res.status !== 200) {
+        alert(`Login failed: ${res.message}`)
+        throw new Error(`Login failed: ${res.message}`)
+      }
+      return { token: res.token }
     } catch (error) {
-      console.error(error)
+      console.error('Error during login:', error)
+      alert('Login failed: Something wrong happened')
+      throw new Error('Login failed: Something wrong happened')
     }
   }
 
@@ -57,7 +86,7 @@ const LoginForm = () => {
             placeholder='yourusername'
             {...register('username')}
           />
-          {errors.username && <p className='text-red-500 mt-1'>{errors.username.message}</p>}
+          {errors.username && <p className='text-red-500'>{errors.username.message}</p>}
         </div>
         <div className='w-full'>
           <label className='font-semibold text-sm' htmlFor='LoginPassword'>
@@ -70,7 +99,7 @@ const LoginForm = () => {
             placeholder='********'
             {...register('password')}
           />
-          {errors.password && <p className='text-red-500 mt-1'>{errors.password.message}</p>}
+          {errors.password && <p className='text-red-500'>{errors.password.message}</p>}
         </div>
         <div className='w-full flex flex-row items-center justify-between'>
           <div className='flex items-center'>
