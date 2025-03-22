@@ -1,20 +1,19 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import * as yup from 'yup';
 import { useForm, SubmitHandler } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 
 interface ILoginForm {
-    email: string,
+    username: string,
     password: string,
 }
 
 const LoginSchema = yup.object().shape({
-    email: yup
+    username: yup
         .string()
         .trim()
-        .matches(/^(?! )[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Please enter a valid email address')
-        .required('Email is required'),
+        .required('Username is required'),
     password: yup
         .string()
         .trim()
@@ -33,14 +32,16 @@ const LoginForm = () => {
     } = useForm<ILoginForm>({
         resolver: yupResolver(LoginSchema),
         defaultValues: {
-            email: '',
+            username: '',
             password: '',
         }
     })
 
+    const navigate = useNavigate()
+
     const onSubmit: SubmitHandler<ILoginForm> = async (data) => {
         try {
-            
+            navigate('/')
         } catch (error) {
             console.error(error)
         }
@@ -50,14 +51,15 @@ const LoginForm = () => {
         <form className='text-start w-full max-w-[960px] px-8 py-12 rounded-md bg-grey shadow-sm bg-gray-100' onSubmit={handleSubmit(onSubmit)}>
             <div className='flex flex-col gap-4 items-center justify-center'>
                 <div className='w-full'>
-                    <label className='font-semibold text-sm' htmlFor='LoginEmail'>Email: </label>
+                    <label className='font-semibold text-sm' htmlFor='LoginUsername'>Username: </label>
                     <input
-                        id='LoginEmail'
-                        type='email'
+                        id='LoginUsername'
+                        type='text'
                         className='w-full p-2 mt-1 border border-gray-300 rounded-md'
-                        placeholder='yourname@email.com'
-                        {...register('email')}
+                        placeholder='yourusername'
+                        {...register('username')}
                     />
+                    {errors.username && <p className='text-red-500 mt-1'>{errors.username.message}</p>}
                 </div>
                 <div className='w-full'>
                     <label className='font-semibold text-sm' htmlFor='LoginPassword'>Password: </label>
@@ -68,6 +70,7 @@ const LoginForm = () => {
                         placeholder='********'
                         {...register('password')}
                     />
+                    {errors.password && <p className='text-red-500 mt-1'>{errors.password.message}</p>}
                 </div>
                 <div className='w-full flex flex-row items-center justify-between'>
                 <div className="flex items-center">
