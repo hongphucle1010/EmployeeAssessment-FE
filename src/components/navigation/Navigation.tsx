@@ -1,28 +1,71 @@
-import { Link, Outlet } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../lib/redux/store'
 
 const Navigation = () => {
-  return (
+  const role = useSelector((state: RootState) => state.user.value.role)
+  console.log(role)
+  //const role = 'employee'
+  const Nav_employee_links = (
     <>
-      <header className='w-full flex items-center justify-between px-[5vw] py-[3vh] bg-blue-600 text-white sticky top-0 left-0 z-50'>
+      <div className='flex flex-1 items-center space-x-[5vw] ml-[5vw]'>
+        <Link to='/Profile' className='hover:text-ggray-300 transition'>
+          Profile
+        </Link>
+        <Link to='/Assessment' className='hover:text-gray-300 transition'>
+          Assessment
+        </Link>
+        <Link to='/Feedback' className='hover:text-gray-300 transition'>
+          Feedback
+        </Link>
+      </div>
+    </>
+  )
+  const Nav_supervisor_links = (
+    <>
+      <div className='flex flex-1 items-center space-x-[5vw] ml-[5vw]'>
+        <Link to='/Profile' className='hover:text-gray-300 transition'>
+          Profile
+        </Link>
+        <Link to='/Employee' className='hover:text-gray-300 transition'>
+          Employee
+        </Link>
+        <Link to='/Assessment' className='hover:text-gray-300 transition'>
+          Assessment
+        </Link>
+      </div>
+    </>
+  )
+  const Nav_guest = (
+    <>
+      <div className='flex flex-1 items-center space-x-[5vw] ml-[5vw]'>
+        <Link to='/A' className='hover:text-gray-300 transition'>
+          No access
+        </Link>
+        <Link to='/B' className='hover:text-gray-300 transition'>
+          No access
+        </Link>
+        <Link to='/C' className='hover:text-gray-300 transition'>
+          No access
+        </Link>
+      </div>
+    </>
+  )
+  const Navigation_container = (
+    <>
+      <header className='w-full h-[10vh] flex items-center justify-between h-[10vh] px-[5vw] py-[3vh] bg-blue-400 text-white sticky top-0 left-0 z-50'>
         <div className='flex flex-1 items-center'>
           <div className='mr-[2vw]'>
             <Link to='/HomePage' className='text-lg font-bold'>
               404BNT
             </Link>
           </div>
-          <div className='flex flex-1 items-center space-x-[5vw] ml-[5vw]'>
-            <Link to='/Employees' className='hover:text-gray-300 transition'>
-              Employees
-            </Link>
-            <Link to='/Temp2' className='hover:text-gray-300 transition'>
-              Temp2
-            </Link>
-            <Link to='/Temp3' className='hover:text-gray-300 transition'>
-              Temp3
-            </Link>
-          </div>
+          <>
+            {role === 'EMPLOYEE' && Nav_employee_links}
+            {role === 'SUPERVISOR' && Nav_supervisor_links}
+            {role === 'GUEST' && Nav_guest}
+          </>
         </div>
-        {/* Nav 2: Login Button */}
         <div>
           <Link
             to='/Login'
@@ -32,13 +75,9 @@ const Navigation = () => {
           </Link>
         </div>
       </header>
-
-      {/* Thêm khoảng trống phía trên nội dung để không bị che bởi header cố định
-      <main>
-        <Outlet />
-      </main> */}
     </>
   )
+  return <>{Navigation_container}</>
 }
 
 export default Navigation
