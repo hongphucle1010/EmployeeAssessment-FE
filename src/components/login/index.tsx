@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import * as yup from 'yup'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { logInApi } from '../../api/login'
 
 interface ILoginForm {
   username: string
@@ -38,30 +39,14 @@ const LoginForm = () => {
     status:
     message:
   */
+
   const onSubmit: SubmitHandler<ILoginForm> = async (data) => {
     try {
       console.log('Submitting:', data)
-
-      const response = await fetch('https://login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data) // Chuyển data thành JSON
-      })
-
-      if (!response.ok) {
-        alert(`Login failed: ${response.status} ${response.statusText}`)
-        throw new Error(`Login failed: ${response.status} ${response.statusText}`)
-      }
-
-      const res = await response.json()
-      console.log('Response:', res)
-      if (res.status !== 200) {
-        alert(`Login failed: ${res.message}`)
-        throw new Error(`Login failed: ${res.message}`)
-      }
-      return { token: res.token }
+      const response = await logInApi(data)
+      console.log('Response:', response)
+      alert('Login successful')
+      return response
     } catch (error) {
       console.error('Error during login:', error)
       alert('Login failed: Something wrong happened')
