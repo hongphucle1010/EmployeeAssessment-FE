@@ -1,4 +1,4 @@
-import { Link, Outlet } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 const Navigation = () => {
   return (
@@ -32,11 +32,6 @@ const Navigation = () => {
           </Link>
         </div>
       </header>
-
-      {/* Thêm khoảng trống phía trên nội dung để không bị che bởi header cố định
-      <main>
-        <Outlet />
-      </main> */}
     </>
   )
 }
