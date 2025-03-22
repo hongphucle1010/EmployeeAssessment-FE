@@ -1,7 +1,10 @@
+
 const EmployeeList = () => {
     return (
-        <div>
-            
+        <div className="w-full flex flex-col items-start gap-4">
+            <table className="w-full border-collapse bg-white shadow-lg">
+
+            </table>
         </div>
     )
 }
