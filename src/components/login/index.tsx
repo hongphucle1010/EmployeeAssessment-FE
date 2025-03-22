@@ -1,10 +1,10 @@
-import { Link } from 'react-router-dom'
-
+import { Link, useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { logInApi } from '../../api/login'
-import { navigate } from 'raviger'
+import { useState } from 'react'
+import { setAccessToken } from '../../lib/helper/authentication'
 
 interface ILoginForm {
   username: string
@@ -17,6 +17,9 @@ const LoginSchema = yup.object().shape({
 })
 
 const LoginForm = () => {
+  const navigate = useNavigate()
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
   const {
     register,
     handleSubmit,
@@ -29,30 +32,19 @@ const LoginForm = () => {
     }
   })
 
-  /*
-    request
-    username:
-    password:
-  */
-  /*
-    response
-    token:
-    status:
-    message:
-  */
-
   const onSubmit: SubmitHandler<ILoginForm> = async (data) => {
+    setErrorMessage(null) // Reset lỗi trước khi gửi request
+
     try {
       console.log('Submitting:', data)
       const response = await logInApi(data)
+      setAccessToken(response.token)
       console.log('Response:', response)
-      alert('Login successful')
-      navigate('/')
-      return response
+
+      navigate('/dashboard')
     } catch (error) {
       console.error('Error during login:', error)
-      alert('Login failed: Something wrong happened')
-      throw new Error('Login failed: Something wrong happened')
+      setErrorMessage('Login failed: Invalid credentials or server error')
     }
   }
 
@@ -62,9 +54,12 @@ const LoginForm = () => {
       onSubmit={handleSubmit(onSubmit)}
     >
       <div className='flex flex-col gap-4 items-center justify-center'>
+        {/* Hiển thị thông báo lỗi */}
+        {errorMessage && <p className='text-red-500'>{errorMessage}</p>}
+
         <div className='w-full'>
           <label className='font-semibold text-sm' htmlFor='LoginUsername'>
-            Username:{' '}
+            Username:
           </label>
           <input
             id='LoginUsername'
@@ -75,9 +70,10 @@ const LoginForm = () => {
           />
           {errors.username && <p className='text-red-500'>{errors.username.message}</p>}
         </div>
+
         <div className='w-full'>
           <label className='font-semibold text-sm' htmlFor='LoginPassword'>
-            Password:{' '}
+            Password:
           </label>
           <input
             id='LoginPassword'
@@ -88,6 +84,7 @@ const LoginForm = () => {
           />
           {errors.password && <p className='text-red-500'>{errors.password.message}</p>}
         </div>
+
         <div className='w-full flex flex-row items-center justify-between'>
           <div className='flex items-center'>
             <input id='RememberMe' type='checkbox' className='mr-2 rounded' />
@@ -99,6 +96,7 @@ const LoginForm = () => {
             <Link to={'/auth/forgot-password'}>Forgot password?</Link>
           </p>
         </div>
+
         <button
           disabled={isSubmitting}
           type='submit'
