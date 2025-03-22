@@ -4,6 +4,7 @@ import * as yup from 'yup'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { logInApi } from '../../api/login'
+import { navigate } from 'raviger'
 
 interface ILoginForm {
   username: string
@@ -46,6 +47,7 @@ const LoginForm = () => {
       const response = await logInApi(data)
       console.log('Response:', response)
       alert('Login successful')
+      navigate('/')
       return response
     } catch (error) {
       console.error('Error during login:', error)
