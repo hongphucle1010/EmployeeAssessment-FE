@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import * as yup from 'yup';
 import { useForm, SubmitHandler } from "react-hook-form"
@@ -37,9 +37,11 @@ const LoginForm = () => {
         }
     })
 
+    const navigate = useNavigate()
+
     const onSubmit: SubmitHandler<ILoginForm> = async (data) => {
         try {
-            
+            navigate('/')
         } catch (error) {
             console.error(error)
         }
@@ -57,7 +59,7 @@ const LoginForm = () => {
                         placeholder='yourusername'
                         {...register('username')}
                     />
-                    {errors.username && <p className='text-red-500'>{errors.username.message}</p>}
+                    {errors.username && <p className='text-red-500 mt-1'>{errors.username.message}</p>}
                 </div>
                 <div className='w-full'>
                     <label className='font-semibold text-sm' htmlFor='LoginPassword'>Password: </label>
@@ -68,7 +70,7 @@ const LoginForm = () => {
                         placeholder='********'
                         {...register('password')}
                     />
-                    {errors.password && <p className='text-red-500'>{errors.password.message}</p>}
+                    {errors.password && <p className='text-red-500 mt-1'>{errors.password.message}</p>}
                 </div>
                 <div className='w-full flex flex-row items-center justify-between'>
                 <div className="flex items-center">
