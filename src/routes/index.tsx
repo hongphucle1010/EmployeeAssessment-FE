@@ -4,7 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { RootState } from '../lib/redux/store'
 import MainLayout from '../layout/MainLayout/MainLayout'
 import LoginPage from '../pages/LoginPage'
-import path from 'path'
+//import path from 'path'
 import EmployeesPage from '../pages/EmployeesPage'
 
 const Router: React.FC = () => {
