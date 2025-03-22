@@ -1,8 +1,9 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import * as yup from 'yup';
 import { useForm, SubmitHandler } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
+import { getAllCriteria, createCriteria } from "../../api/criteria";
 
 interface ICriteriaList {
     name: string,
@@ -90,18 +91,20 @@ const NewCriteriaListForm = ({ open, setOpen }: { open: boolean, setOpen: (open:
 
     const onSubmit: SubmitHandler<ICriteriaList> = async (data) => {
         try {
-
+            await createCriteria(data)
+            console.log('Criteria created', data)
+            setOpen(!open)
         } catch(error) {
             console.error(error)
         }
     }
 
     return (
-        <form className="w-full p-5 flex flex-col gap-4 rounded-lg border border-gray-300">
+        <form className="w-full p-5 flex flex-col gap-4 rounded-lg border border-gray-300" onSubmit={handleSubmit(onSubmit)}>
             <div className='flex flex-col gap-4 items-center justify-center'>
                 <span className="text-xl font-semibold text-left w-full">New Criteria</span>
                 <div className="w-full">
-                    <label className='font-semibold text-sm'>Name: </label>
+                    <label className='font-semibold text-sm' htmlFor="CriteriaName">Name: </label>
                     <input
                         id='CriteriaName'
                         type="text"
@@ -111,7 +114,7 @@ const NewCriteriaListForm = ({ open, setOpen }: { open: boolean, setOpen: (open:
                     />
                 </div>
                 <div className="w-full">
-                    <label className='font-semibold text-sm'>Description: </label>
+                    <label className='font-semibold text-sm' htmlFor="CriteriaDesc">Description: </label>
                     <input
                         id='CriteriaDesc'
                         type="text"
@@ -128,8 +131,8 @@ const NewCriteriaListForm = ({ open, setOpen }: { open: boolean, setOpen: (open:
                         Cancel
                     </button>
                     <button
+                        type="submit"
                         className="px-3 py-2 rounded-md bg-blue-600 text-white"
-                        onClick={() => setOpen(!open)}
                     >
                         Save
                     </button>
@@ -142,11 +145,27 @@ const NewCriteriaListForm = ({ open, setOpen }: { open: boolean, setOpen: (open:
 const CriteriaPage = () => {
     const [openNewForm, setOpenNewForm] = useState(false)
 
+    const [criteriaList, setCriteriaList] = useState<ICriteriaList[]>([]);
+
+    useEffect(() => {
+        const fetchCriteria = async () => {
+            try {
+                const response = await getAllCriteria();
+                setCriteriaList(response);
+                console.log("Criteria fetched", response);
+            } catch (error) {
+                console.error("Failed to fetch criteria", error);
+            }
+        };
+
+        fetchCriteria();
+    }, []);
+
     return (
         <div className="flex flex-col items-start gap-4 text-black p-5">
             <span className="font-semibold text-2xl">My Criteria Collection</span>
-            {CRITERIA_LIST.map((item) => (
-                <CriteriaList key={item.id} name={item.name} description={item.description} />
+            {CRITERIA_LIST.map((item, index) => (
+                <CriteriaList key={index} name={item.name} description={item.description} />
             ))}
             {openNewForm && <NewCriteriaListForm open={openNewForm} setOpen={setOpenNewForm} />}
             <button
