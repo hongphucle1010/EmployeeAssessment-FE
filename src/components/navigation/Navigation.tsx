@@ -14,8 +14,8 @@ const Navigation = () => {
             <Link to='/Employees' className='hover:text-gray-300 transition'>
               Employees
             </Link>
-            <Link to='/Temp2' className='hover:text-gray-300 transition'>
-              Temp2
+            <Link to='/criteria' className='hover:text-gray-300 transition'>
+              Criteria
             </Link>
             <Link to='/Temp3' className='hover:text-gray-300 transition'>
               Temp3

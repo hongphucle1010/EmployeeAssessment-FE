@@ -6,6 +6,7 @@ import MainLayout from '../layout/MainLayout/MainLayout'
 import LoginPage from '../pages/LoginPage'
 import path from 'path'
 import EmployeesPage from '../pages/EmployeesPage'
+import CriteriaPage from '../pages/CriteriaPage'
 
 const Router: React.FC = () => {
   const role = useSelector((state: RootState) => state.user.value.role)
@@ -21,6 +22,14 @@ const Router: React.FC = () => {
         <div>
           <h1>Home Error</h1>
         </div>
+      )
+    },
+    {
+      path: '/Employees',
+      element: (
+        <MainLayout>
+          <EmployeesPage />
+        </MainLayout>
       )
     }
   ]
@@ -66,6 +75,14 @@ const Router: React.FC = () => {
       element: (
         <MainLayout>
           <EmployeesPage />
+        </MainLayout>
+      )
+    },
+    {
+      path: '/criteria',
+      element: (
+        <MainLayout>
+          <CriteriaPage />
         </MainLayout>
       )
     }
