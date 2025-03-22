@@ -1,8 +1,9 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 import * as yup from 'yup'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { logInApi } from '../../api/login'
 
 interface ILoginForm {
   username: string
@@ -11,10 +12,7 @@ interface ILoginForm {
 
 const LoginSchema = yup.object().shape({
   username: yup.string().trim().required('Username is required'),
-  password: yup
-    .string()
-    .trim()
-    .required('Password is required')
+  password: yup.string().trim().required('Password is required')
 })
 
 const LoginForm = () => {
@@ -30,13 +28,29 @@ const LoginForm = () => {
     }
   })
 
-  const navigate = useNavigate()
+  /*
+    request
+    username:
+    password:
+  */
+  /*
+    response
+    token:
+    status:
+    message:
+  */
 
   const onSubmit: SubmitHandler<ILoginForm> = async (data) => {
     try {
-      navigate('/')
+      console.log('Submitting:', data)
+      const response = await logInApi(data)
+      console.log('Response:', response)
+      alert('Login successful')
+      return response
     } catch (error) {
-      console.error(error)
+      console.error('Error during login:', error)
+      alert('Login failed: Something wrong happened')
+      throw new Error('Login failed: Something wrong happened')
     }
   }
 
@@ -57,7 +71,7 @@ const LoginForm = () => {
             placeholder='yourusername'
             {...register('username')}
           />
-          {errors.username && <p className='text-red-500 mt-1'>{errors.username.message}</p>}
+          {errors.username && <p className='text-red-500'>{errors.username.message}</p>}
         </div>
         <div className='w-full'>
           <label className='font-semibold text-sm' htmlFor='LoginPassword'>
@@ -70,7 +84,7 @@ const LoginForm = () => {
             placeholder='********'
             {...register('password')}
           />
-          {errors.password && <p className='text-red-500 mt-1'>{errors.password.message}</p>}
+          {errors.password && <p className='text-red-500'>{errors.password.message}</p>}
         </div>
         <div className='w-full flex flex-row items-center justify-between'>
           <div className='flex items-center'>
