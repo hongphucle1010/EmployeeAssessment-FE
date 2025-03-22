@@ -3,6 +3,9 @@ import { useSelector } from 'react-redux'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { RootState } from '../lib/redux/store'
 import MainLayout from '../layout/MainLayout/MainLayout'
+import LoginPage from '../pages/LoginPage'
+import path from 'path'
+import EmployeesPage from '../pages/EmployeesPage'
 
 const Router: React.FC = () => {
   const role = useSelector((state: RootState) => state.user.value.role)
@@ -30,6 +33,14 @@ const Router: React.FC = () => {
           <h1>Home</h1>
         </div>
       )
+    },
+    {
+      path: '/Employees',
+      element: (
+        <MainLayout>
+          <EmployeesPage />
+        </MainLayout>
+      )
     }
   ]
 
@@ -46,15 +57,15 @@ const Router: React.FC = () => {
       path: '/login',
       element: (
         <MainLayout>
-          <div>Home</div>
+          <LoginPage />
         </MainLayout>
       )
     },
     {
-      path: '/helloworld',
+      path: '/Employees',
       element: (
         <MainLayout>
-          <div>HelloWorld</div>
+          <EmployeesPage />
         </MainLayout>
       )
     }
