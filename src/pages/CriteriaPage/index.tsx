@@ -146,7 +146,7 @@ const CriteriaPage = () => {
         <div className="flex flex-col items-start gap-4 text-black p-5">
             <span className="font-semibold text-2xl">My Criteria Collection</span>
             {CRITERIA_LIST.map((item) => (
-                <CriteriaList key={item.id} id={item.id} name={item.name} description={item.description} />
+                <CriteriaList key={item.id} name={item.name} description={item.description} />
             ))}
             {openNewForm && <NewCriteriaListForm open={openNewForm} setOpen={setOpenNewForm} />}
             <button
