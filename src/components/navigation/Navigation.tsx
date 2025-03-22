@@ -10,10 +10,16 @@ const Navigation = () => {
     <>
       <div className='flex flex-1 items-center space-x-[5vw] ml-[5vw]'>
         <Link to='/Profile' className='hover:text-ggray-300 transition'>
-          Profile
+          My Profile
         </Link>
         <Link to='/Assessment' className='hover:text-gray-300 transition'>
           Assessment
+        </Link>
+        <Link to='/Employee' className='hover:text-gray-300 transition'>
+          Employee
+        </Link>
+        <Link to='/AssessmentCriteria' className='hover:text-gray-300 transition'>
+          Assessment Criteria
         </Link>
         <Link to='/Feedback' className='hover:text-gray-300 transition'>
           Feedback
@@ -21,7 +27,7 @@ const Navigation = () => {
       </div>
     </>
   )
-  const Nav_supervisor_links = (
+  const Nav_hr_links = (
     <>
       <div className='flex flex-1 items-center space-x-[5vw] ml-[5vw]'>
         <Link to='/Profile' className='hover:text-gray-300 transition'>
@@ -39,14 +45,20 @@ const Navigation = () => {
   const Nav_guest = (
     <>
       <div className='flex flex-1 items-center space-x-[5vw] ml-[5vw]'>
-        <Link to='/A' className='hover:text-gray-300 transition'>
-          No access
+        <Link to='/Profile' className='hover:text-ggray-300 transition'>
+          My Profile
         </Link>
-        <Link to='/B' className='hover:text-gray-300 transition'>
-          No access
+        <Link to='/Assessment' className='hover:text-gray-300 transition'>
+          Assessment
         </Link>
-        <Link to='/C' className='hover:text-gray-300 transition'>
-          No access
+        <Link to='/Employee' className='hover:text-gray-300 transition'>
+          Employee
+        </Link>
+        <Link to='/AssessmentCriteria' className='hover:text-gray-300 transition'>
+          Assessment Criteria
+        </Link>
+        <Link to='/Feedback' className='hover:text-gray-300 transition'>
+          Feedback
         </Link>
       </div>
     </>
@@ -62,7 +74,7 @@ const Navigation = () => {
           </div>
           <>
             {role === 'EMPLOYEE' && Nav_employee_links}
-            {role === 'SUPERVISOR' && Nav_supervisor_links}
+            {role === 'SUPERVISOR' && Nav_hr_links}
             {role === 'GUEST' && Nav_guest}
           </>
         </div>
