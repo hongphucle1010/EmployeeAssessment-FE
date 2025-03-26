@@ -7,7 +7,6 @@ interface AuthorizationState {
     id: string
     name: string
     role: Role
-    email: string
   }
 }
 
@@ -17,8 +16,7 @@ const authorization = createSlice({
     value: {
       id: '',
       name: '',
-      role: 'GUEST' as Role,
-      email: ''
+      role: 'GUEST' as Role
     }
   },
   reducers: {
@@ -26,7 +24,6 @@ const authorization = createSlice({
       state.value.id = ''
       state.value.name = ''
       state.value.role = 'GUEST'
-      state.value.email = ''
       clearAllTokens()
       window.location.href = '/'
     },

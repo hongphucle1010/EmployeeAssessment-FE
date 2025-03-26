@@ -6,10 +6,38 @@ import MainLayout from '../layout/MainLayout/MainLayout'
 import LoginPage from '../pages/LoginPage'
 import EmployeesPage from '../pages/EmployeesPage'
 import CriteriaPage from '../pages/CriteriaPage'
+import ErrorPage from '../pages/ErrorPage/ErrorPage'
+import LogOut from '../pages/LogOutPage'
+import TestingPage from '../pages/TestingPage/TestingPage'
+import LoggedIn from '../pages/LoginPage/LoggedIn'
 
 const Router: React.FC = () => {
   const role = useSelector((state: RootState) => state.user.value.role)
+
+  const userRoutes = [
+    {
+      path: '/login',
+      element: (
+        <MainLayout>
+          <LoggedIn />
+        </MainLayout>
+      )
+    },
+    {
+      path: '/test',
+      element: (
+        <MainLayout>
+          <TestingPage />
+        </MainLayout>
+      )
+    },
+    {
+      path: '/logout',
+      element: <LogOut />
+    }
+  ]
   const employeeRoutes = [
+    ...userRoutes,
     {
       path: '/',
       element: (
@@ -17,14 +45,10 @@ const Router: React.FC = () => {
           <div>Home</div>
         </MainLayout>
       ),
-      errorElement: (
-        <div>
-          <h1>Home Error</h1>
-        </div>
-      )
+      errorElement: <ErrorPage />
     },
     {
-      path: '/Employees',
+      path: '/employees',
       element: (
         <MainLayout>
           <EmployeesPage />
@@ -33,22 +57,16 @@ const Router: React.FC = () => {
     }
   ]
 
-  const supervisorRoutes = [
+  const adminRoutes = [
+    ...userRoutes,
     {
       path: '/',
       element: (
         <div>
           <h1>Home</h1>
         </div>
-      )
-    },
-    {
-      path: '/Employees',
-      element: (
-        <MainLayout>
-          <EmployeesPage />
-        </MainLayout>
-      )
+      ),
+      errorElement: <ErrorPage />
     }
   ]
 
@@ -59,7 +77,8 @@ const Router: React.FC = () => {
         <MainLayout>
           <div>Home</div>
         </MainLayout>
-      )
+      ),
+      errorElement: <ErrorPage />
     },
     {
       path: '/login',
@@ -70,23 +89,15 @@ const Router: React.FC = () => {
       )
     },
     {
-      path: '/Employees',
-      element: (
-        <MainLayout>
-          <EmployeesPage />
-        </MainLayout>
-      )
-    },
-    {
       path: '/test',
       element: (
         <MainLayout>
-          <EmployeesPage />
+          <TestingPage />
         </MainLayout>
       )
     },
     {
-      path: '/AssessmentCriteria',
+      path: '/assessment-criteria',
       element: (
         <MainLayout>
           <CriteriaPage />
@@ -95,7 +106,7 @@ const Router: React.FC = () => {
     }
   ]
 
-  const routes = role === 'EMPLOYEE' ? employeeRoutes : role === 'SUPERVISOR' ? supervisorRoutes : guestRoutes
+  const routes = role === 'USER' ? employeeRoutes : role === 'ADMIN' ? adminRoutes : guestRoutes
   const router = createBrowserRouter(routes)
   return <RouterProvider router={router} />
 }

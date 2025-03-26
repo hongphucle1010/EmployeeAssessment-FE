@@ -1,10 +1,11 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import * as yup from 'yup'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { logInApi } from '../../api/login'
-import { useState } from 'react'
-import { setAccessToken } from '../../lib/helper/authentication'
+import { AuthenticationService } from '../../services/authentication'
+import { useDispatch } from 'react-redux'
+import { MockService } from '../../services'
+import { Bounce, toast } from 'react-toastify'
 
 interface ILoginForm {
   username: string
@@ -17,9 +18,7 @@ const LoginSchema = yup.object().shape({
 })
 
 const LoginForm = () => {
-  const navigate = useNavigate()
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
-
+  const dispatch = useDispatch()
   const {
     register,
     handleSubmit,
@@ -33,18 +32,40 @@ const LoginForm = () => {
   })
 
   const onSubmit: SubmitHandler<ILoginForm> = async (data) => {
-    setErrorMessage(null) // Reset lỗi trước khi gửi request
-
     try {
       console.log('Submitting:', data)
-      const response = await logInApi(data)
-      setAccessToken(response.token)
-      console.log('Response:', response)
-      alert('Login successful')
-      return response
+      MockService.enableMock()
+      MockService.setMockData('AuthencationApi.logIn', {
+        data: {
+          data: {
+            token: 'mocked_token'
+          }
+        }
+      })
+      MockService.setMockData('AuthencationApi.getMe', {
+        data: {
+          data: {
+            id: 'mocked_id',
+            username: 'mocked_username',
+            role: 'USER'
+          }
+        }
+      })
+      await AuthenticationService.logIn(data.username, data.password, dispatch)
     } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      toast.error(`Đăng nhập thất bại! ${(error as any)?.message}`, {
+        position: 'bottom-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
+        transition: Bounce
+      })
       console.error('Error during login:', error)
-      setErrorMessage('Login failed: Invalid credentials or server error')
     }
   }
 
@@ -54,9 +75,6 @@ const LoginForm = () => {
       onSubmit={handleSubmit(onSubmit)}
     >
       <div className='flex flex-col gap-4 items-center justify-center'>
-        {/* Hiển thị thông báo lỗi */}
-        {errorMessage && <p className='text-red-500'>{errorMessage}</p>}
-
         <div className='w-full'>
           <label className='font-semibold text-sm' htmlFor='LoginUsername'>
             Username:
