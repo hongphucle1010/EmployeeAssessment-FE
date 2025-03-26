@@ -45,7 +45,7 @@ const LoginForm = () => {
       console.log('Submitting:', data)
       const response = await logInApi(data)
       console.log('Response:', response)
-      
+
       alert('Login successful')
       return response
     } catch (error) {

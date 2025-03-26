@@ -78,6 +78,14 @@ const Router: React.FC = () => {
       )
     },
     {
+      path: '/test',
+      element: (
+        <MainLayout>
+          <EmployeesPage />
+        </MainLayout>
+      )
+    },
+    {
       path: '/AssessmentCriteria',
       element: (
         <MainLayout>
