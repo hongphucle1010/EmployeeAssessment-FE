@@ -6,11 +6,10 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { CriteriaService } from '../../services/criteria'
 import { Criteria } from '../../api/criteria/types'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const CriteriaItem = ({ title, item }: { title: string; item: string }) => {
   return (
     <div className='flex flex-row items-start gap-2'>
-      {/* <span className="font-semibold">{title}</span> */}
+      <span className='font-semibold'>{title}</span>
       <div className='flex flex-row items-center justify-between w-full bg-gray-100 rounded-lg p-2'>
         <span className='text-sm font-light'>{item}</span>
       </div>

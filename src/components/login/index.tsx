@@ -35,13 +35,13 @@ const LoginForm = () => {
     try {
       console.log('Submitting:', data)
       MockService.enableMock()
-      MockService.setMockData('AuthencationApi.logIn', {
-        data: {
-          data: {
-            token: 'mocked_token'
-          }
-        }
-      })
+      // MockService.setMockData('AuthencationApi.logIn', {
+      //   data: {
+      //     data: {
+      //       token: 'mocked_token'
+      //     }
+      //   }
+      // })
       MockService.setMockData('AuthencationApi.getMe', {
         data: {
           data: {

@@ -32,6 +32,14 @@ const Router: React.FC = () => {
       )
     },
     {
+      path: '/assessment-criteria',
+      element: (
+        <MainLayout>
+          <CriteriaPage />
+        </MainLayout>
+      )
+    },
+    {
       path: '/logout',
       element: <LogOut />
     }
@@ -93,14 +101,6 @@ const Router: React.FC = () => {
       element: (
         <MainLayout>
           <TestingPage />
-        </MainLayout>
-      )
-    },
-    {
-      path: '/assessment-criteria',
-      element: (
-        <MainLayout>
-          <CriteriaPage />
         </MainLayout>
       )
     }
