@@ -6,88 +6,78 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import { getAllCriteria, createCriteria } from "../../api/criteria";
 
 interface ICriteriaList {
-    name: string,
-    description: string,
+  name: string
+  description: string
 }
 
 // hard-coded data
 const CRITERIA_LIST = [
-    {
-        id: 1,
-        name: 'Hello Hello',
-        description: 'Happy Happy Happy HappyHappy HappyHappy HappyHappy HappyHappy Happy'
-    },
-    {
-        id: 2,
-        name: 'Hello Hello',
-        description: 'Happy Happy Happy HappyHappy HappyHappy HappyHappy HappyHappy Happy'
-    },
-    {
-        id: 3,
-        name: 'Hello Hello',
-        description: 'Happy Happy Happy HappyHappy HappyHappy HappyHappy HappyHappy Happy'
-    }
+  {
+    id: 1,
+    name: 'Hello Hello',
+    description: 'Happy Happy Happy HappyHappy HappyHappy HappyHappy HappyHappy Happy'
+  },
+  {
+    id: 2,
+    name: 'Hello Hello',
+    description: 'Happy Happy Happy HappyHappy HappyHappy HappyHappy HappyHappy Happy'
+  },
+  {
+    id: 3,
+    name: 'Hello Hello',
+    description: 'Happy Happy Happy HappyHappy HappyHappy HappyHappy HappyHappy Happy'
+  }
 ]
 
-const CriteriaItem = ({ title, item }: { title: string, item: string }) => {
-    return (
-        <div className="flex flex-row items-start gap-2">
-            {/* <span className="font-semibold">{title}</span> */}
-            <div className="flex flex-row items-center justify-between w-full bg-gray-100 rounded-lg p-2">
-                <span className="text-sm font-light">{item}</span>
-            </div>
-        </div>
-    )
+const CriteriaItem = ({ title, item }: { title: string; item: string }) => {
+  return (
+    <div className='flex flex-row items-start gap-2'>
+      {/* <span className="font-semibold">{title}</span> */}
+      <div className='flex flex-row items-center justify-between w-full bg-gray-100 rounded-lg p-2'>
+        <span className='text-sm font-light'>{item}</span>
+      </div>
+    </div>
+  )
 }
 
 const CriteriaList = (props: ICriteriaList) => {
-    return (
-        <div className="w-full p-5 flex flex-col gap-4 rounded-lg border border-blue-600">
-            <div className="w-full flex flex-row items-center justify-between">
-                <span className="font-semibold text-base p-2 rounded-lg bg-blue-200">{props.name}</span>
-                <div className="flex flex-row items-center gap-2">
-                    <button
-                        className="hover:underline"
-                        onClick={() => { }}
-                    >
-                        Edit
-                    </button>
-                    {'|'}
-                    <button
-                        className="hover:underline"
-                        onClick={() => { }}
-                    >
-                        Delete
-                    </button>
-                </div>
-            </div>
-            {/* <CriteriaItem title="Name" item={props.name} /> */}
-            <CriteriaItem title="Description" item={props.description} />
+  return (
+    <div className='w-full p-5 flex flex-col gap-4 rounded-lg border border-blue-600'>
+      <div className='w-full flex flex-row items-center justify-between'>
+        <span className='font-semibold text-base p-2 rounded-lg bg-blue-200'>{props.name}</span>
+        <div className='flex flex-row items-center gap-2'>
+          <button className='hover:underline' onClick={() => {}}>
+            Edit
+          </button>
+          {'|'}
+          <button className='hover:underline' onClick={() => {}}>
+            Delete
+          </button>
         </div>
-    )
+      </div>
+      {/* <CriteriaItem title="Name" item={props.name} /> */}
+      <CriteriaItem title='Description' item={props.description} />
+    </div>
+  )
 }
 
 const CriteriaSchema = yup.object().shape({
-    name: yup
-        .string()
-        .required('Criteria name is required'),
-    description: yup
-        .string()
-        .required('Description is required')
+  name: yup.string().required('Criteria name is required'),
+  description: yup.string().required('Description is required')
 })
 
-const NewCriteriaListForm = ({ open, setOpen }: { open: boolean, setOpen: (open: boolean) => void }) => {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors }
-    } = useForm<ICriteriaList>({
-        resolver: yupResolver(CriteriaSchema),
-        defaultValues: {
-            name: '',
-            description: ''
-        }
-    })
+const NewCriteriaListForm = ({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<ICriteriaList>({
+    resolver: yupResolver(CriteriaSchema),
+    defaultValues: {
+      name: '',
+      description: ''
+    }
+  })
 
     const onSubmit: SubmitHandler<ICriteriaList> = async (data) => {
         try {

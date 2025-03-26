@@ -1,18 +1,16 @@
-import { AxiosError } from 'axios'
+import { apiClient } from '..'
+import { BackendResponse } from '../types'
+import { LogInPayload } from './types'
 
-export async function logInApi(code: string) {
+export async function logInApi(username: string, password: string) {
   try {
-    // const response = await apiClient.get<LogInWithGoogleResponse>('/auth/google?code=' + code)
-    const response = {
-        data: true,
-    };
-    // const response: LogInWithGoogleResponse = await fetchUserInfo(access_token)
-    return response.data
+    const response = await apiClient.post<BackendResponse<LogInPayload>>('/auth/login', {
+      username,
+      password
+    })
+    return response
   } catch (error) {
-    if (error instanceof AxiosError) {
-      console.error('Axios error: ', error)
-      throw new Error(error.response?.data)
-    } else console.error(error)
-    throw new Error('Login failed')
+    console.error(error)
+    throw error
   }
 }

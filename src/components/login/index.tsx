@@ -40,8 +40,8 @@ const LoginForm = () => {
       const response = await logInApi(data)
       setAccessToken(response.token)
       console.log('Response:', response)
-
-      navigate('/dashboard')
+      alert('Login successful')
+      return response
     } catch (error) {
       console.error('Error during login:', error)
       setErrorMessage('Login failed: Invalid credentials or server error')
