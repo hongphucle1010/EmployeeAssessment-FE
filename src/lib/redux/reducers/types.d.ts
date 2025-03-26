@@ -1,8 +1,7 @@
-export type Role = 'GUEST' | 'EMPLOYEE' | 'SUPERVISOR'
+export type Role = 'GUEST' | 'USER' | 'ADMIN'
 
 export interface User {
   id: string
   name: string
   role: Role
-  email: string
 }

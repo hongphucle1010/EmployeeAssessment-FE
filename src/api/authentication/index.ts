@@ -1,16 +1,12 @@
-import { apiClient } from '..'
+import { BaseApi } from '..'
 import { BackendResponse } from '../types'
-import { LogInPayload } from './types'
+import { GetMePayload, LogInPayload } from './types'
 
-export async function logInApi(username: string, password: string) {
-  try {
-    const response = await apiClient.post<BackendResponse<LogInPayload>>('/auth/login', {
-      username,
-      password
-    })
-    return response
-  } catch (error) {
-    console.error(error)
-    throw error
+export class AuthencationApi extends BaseApi {
+  static async logIn(username: string, password: string) {
+    return this.request<BackendResponse<LogInPayload>>('post', '/auth/login', { username, password })
+  }
+  static async getMe() {
+    return this.request<BackendResponse<GetMePayload>>('get', '/auth/me')
   }
 }

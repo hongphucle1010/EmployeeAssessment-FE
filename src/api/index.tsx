@@ -25,3 +25,16 @@ apiClient.interceptors.request.use(
     return Promise.reject(error)
   }
 )
+
+export abstract class BaseApi {
+  private static apiClient = apiClient
+  protected static async request<T>(method: 'get' | 'post' | 'put' | 'delete' | 'patch', url: string, data?: object) {
+    try {
+      const response = await (method === 'get' ? this.apiClient.get<T>(url) : this.apiClient[method]<T>(url, data))
+      return response
+    } catch (error) {
+      console.error(error)
+      throw error
+    }
+  }
+}
