@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from "react"
 
-import * as yup from 'yup'
-import { useForm, SubmitHandler } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup';
+import { useForm, SubmitHandler } from "react-hook-form"
+import { yupResolver } from "@hookform/resolvers/yup"
+import { getAllCriteria, createCriteria } from "../../api/criteria";
 
 interface ICriteriaList {
   name: string
@@ -78,71 +79,94 @@ const NewCriteriaListForm = ({ open, setOpen }: { open: boolean; setOpen: (open:
     }
   })
 
-  const onSubmit: SubmitHandler<ICriteriaList> = async (data) => {
-    try {
-    } catch (error) {
-      console.error(error)
+    const onSubmit: SubmitHandler<ICriteriaList> = async (data) => {
+        try {
+            await createCriteria(data)
+            console.log('Criteria created', data)
+            setOpen(!open)
+        } catch(error) {
+            console.error(error)
+        }
     }
-  }
 
-  return (
-    <form className='w-full p-5 flex flex-col gap-4 rounded-lg border border-gray-300'>
-      <div className='flex flex-col gap-4 items-center justify-center'>
-        <span className='text-xl font-semibold text-left w-full'>New Criteria</span>
-        <div className='w-full'>
-          <label className='font-semibold text-sm'>Name: </label>
-          <input
-            id='CriteriaName'
-            type='text'
-            className='w-full p-2 mt-1 border border-gray-300 rounded-md'
-            placeholder='Criteria #1'
-            {...register('name')}
-          />
-        </div>
-        <div className='w-full'>
-          <label className='font-semibold text-sm'>Description: </label>
-          <input
-            id='CriteriaDesc'
-            type='text'
-            className='w-full p-2 mt-1 border border-gray-300 rounded-md'
-            placeholder='Something about this criteria...'
-            {...register('description')}
-          />
-        </div>
-        <div className='flex flex-row items-center gap-3'>
-          <button className='px-3 py-2 rounded-md bg-gray-300 text-white' onClick={() => setOpen(!open)}>
-            Cancel
-          </button>
-          <button className='px-3 py-2 rounded-md bg-blue-600 text-white' onClick={() => setOpen(!open)}>
-            Save
-          </button>
-        </div>
-      </div>
-    </form>
-  )
+    return (
+        <form className="w-full p-5 flex flex-col gap-4 rounded-lg border border-gray-300" onSubmit={handleSubmit(onSubmit)}>
+            <div className='flex flex-col gap-4 items-center justify-center'>
+                <span className="text-xl font-semibold text-left w-full">New Criteria</span>
+                <div className="w-full">
+                    <label className='font-semibold text-sm' htmlFor="CriteriaName">Name: </label>
+                    <input
+                        id='CriteriaName'
+                        type="text"
+                        className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                        placeholder="Criteria #1"
+                        {...register('name')}
+                    />
+                </div>
+                <div className="w-full">
+                    <label className='font-semibold text-sm' htmlFor="CriteriaDesc">Description: </label>
+                    <input
+                        id='CriteriaDesc'
+                        type="text"
+                        className="w-full p-2 mt-1 border border-gray-300 rounded-md"
+                        placeholder="Something about this criteria..."
+                        {...register('description')}
+                    />
+                </div>
+                <div className="flex flex-row items-center gap-3">
+                    <button
+                        className="px-3 py-2 rounded-md bg-gray-300 text-white"
+                        onClick={() => setOpen(!open)}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        className="px-3 py-2 rounded-md bg-blue-600 text-white"
+                    >
+                        Save
+                    </button>
+                </div>
+            </div>
+        </form>
+    )
 }
 
 const CriteriaPage = () => {
-  const [openNewForm, setOpenNewForm] = useState(false)
+    const [openNewForm, setOpenNewForm] = useState(false)
 
-  return (
-    <div className='flex flex-col items-start gap-4 text-black p-5'>
-      <span className='font-semibold text-2xl'>My Criteria Collection</span>
-      {CRITERIA_LIST.map((item) => (
-        <CriteriaList key={item.id} name={item.name} description={item.description} />
-      ))}
-      {openNewForm && <NewCriteriaListForm open={openNewForm} setOpen={setOpenNewForm} />}
-      <button
-        disabled={openNewForm === true}
-        className='w-full p-5 rounded-lg border-dashed border border-blue-600 text-blue-600 disabled:border-gray-400 disabled:text-gray-400'
-        onClick={() => {
-          setOpenNewForm(!openNewForm)
-        }}
-      >
-        Add New Criteria
-      </button>
-    </div>
-  )
+    const [criteriaList, setCriteriaList] = useState<ICriteriaList[]>([]);
+
+    useEffect(() => {
+        const fetchCriteria = async () => {
+            try {
+                const response = await getAllCriteria();
+                setCriteriaList(response);
+                console.log("Criteria fetched", response);
+            } catch (error) {
+                console.error("Failed to fetch criteria", error);
+            }
+        };
+
+        fetchCriteria();
+    }, []);
+
+    return (
+        <div className="flex flex-col items-start gap-4 text-black p-5">
+            <span className="font-semibold text-2xl">My Criteria Collection</span>
+            {CRITERIA_LIST.map((item, index) => (
+                <CriteriaList key={index} name={item.name} description={item.description} />
+            ))}
+            {openNewForm && <NewCriteriaListForm open={openNewForm} setOpen={setOpenNewForm} />}
+            <button
+                disabled={openNewForm === true}
+                className="w-full p-5 rounded-lg border-dashed border border-blue-600 text-blue-600 disabled:border-gray-400 disabled:text-gray-400"
+                onClick={() => { setOpenNewForm(!openNewForm) }}
+            >
+                Add New Criteria
+            </button>
+        </div>
+    )
 }
 
 export default CriteriaPage
