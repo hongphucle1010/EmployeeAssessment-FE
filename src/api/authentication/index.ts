@@ -7,6 +7,9 @@ export class AuthencationApi extends BaseApi {
     return this.request<BackendResponse<LogInPayload>>('post', '/auth/login', { username, password })
   }
   static async getMe() {
-    return this.request<BackendResponse<GetMePayload>>('get', '/auth/me')
+    return this.request<BackendResponse<GetMePayload>>('get', '/user/me')
+  }
+  static async register(username: string, password: string, role: string) {
+    return this.request<BackendResponse<object>>('post', '/user/register', { username, password, role })
   }
 }

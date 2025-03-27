@@ -124,8 +124,8 @@ const CriteriaPage = () => {
     const fetchCriteria = async () => {
       try {
         const response = await CriteriaService.getCriterias()
-        setCriteriaList(response.data)
         console.log('Criteria fetched', response)
+        setCriteriaList(response.data)
       } catch (error) {
         console.error('Failed to fetch criteria', error)
       }
