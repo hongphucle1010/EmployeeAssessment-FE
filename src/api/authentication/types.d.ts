@@ -6,4 +6,5 @@ export interface GetMePayload {
   id: string
   username: string
   role: 'ADMIN' | 'USER' | ''
+  supervisor: number
 }

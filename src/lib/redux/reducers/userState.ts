@@ -3,11 +3,7 @@ import { Role, User } from './types'
 import { clearAllTokens } from '../../helper/authentication.ts'
 
 interface AuthorizationState {
-  value: {
-    id: string
-    name: string
-    role: Role
-  }
+  value: User
 }
 
 const authorization = createSlice({
@@ -16,7 +12,8 @@ const authorization = createSlice({
     value: {
       id: '',
       name: '',
-      role: 'GUEST' as Role
+      role: 'GUEST' as Role,
+      supervisor: 0
     }
   },
   reducers: {
@@ -24,6 +21,7 @@ const authorization = createSlice({
       state.value.id = ''
       state.value.name = ''
       state.value.role = 'GUEST'
+      state.value.supervisor = 0
       clearAllTokens()
       window.location.href = '/'
     },

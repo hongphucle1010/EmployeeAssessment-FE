@@ -4,7 +4,7 @@ import { useForm, SubmitHandler } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { AuthenticationService } from '../../services/authentication'
 import { useDispatch } from 'react-redux'
-import { MockService } from '../../services'
+// import { MockService } from '../../services'
 import { Bounce, toast } from 'react-toastify'
 
 interface ILoginForm {
@@ -34,23 +34,6 @@ const LoginForm = () => {
   const onSubmit: SubmitHandler<ILoginForm> = async (data) => {
     try {
       console.log('Submitting:', data)
-      MockService.enableMock()
-      // MockService.setMockData('AuthencationApi.logIn', {
-      //   data: {
-      //     data: {
-      //       token: 'mocked_token'
-      //     }
-      //   }
-      // })
-      MockService.setMockData('AuthencationApi.getMe', {
-        data: {
-          data: {
-            id: 'mocked_id',
-            username: 'mocked_username',
-            role: 'USER'
-          }
-        }
-      })
       await AuthenticationService.logIn(data.username, data.password, dispatch)
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
