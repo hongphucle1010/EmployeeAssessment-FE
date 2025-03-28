@@ -1,13 +1,18 @@
 import { BaseApi } from '..'
+import { BackendResponse } from '../types'
 import { Assessment } from './types'
 
 export class AssessmentApi extends BaseApi {
-  static async getAssessments() {
-    return this.request('get', '/assessment')
+  static async getAllAssessment() {
+    return this.request<BackendResponse<Assessment[]>>('get', '/assessment/all')
   }
 
   static async getAssessmentById(id: number) {
-    return this.request('get', `/assessment/${id}`)
+    return this.request<BackendResponse<Assessment[]>>('get', `/assessment/${id}`)
+  }
+
+  static async getMyAssesment() {
+    return this.request<BackendResponse<Assessment[]>>('get', '/assessment/my')
   }
 
   static async createAssessment(data: Assessment) {

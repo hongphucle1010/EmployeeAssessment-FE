@@ -56,7 +56,7 @@ const Router: React.FC = () => {
       errorElement: <ErrorPage />
     },
     {
-      path: '/employees',
+      path: '/employee',
       element: (
         <MainLayout>
           <EmployeesPage />

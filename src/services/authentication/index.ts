@@ -17,12 +17,17 @@ export class AuthenticationService extends BaseService {
       logInReducer({
         id: me.data.data.id,
         name: me.data.data.username,
-        role: me.data.data.role ? me.data.data.role : 'GUEST'
+        role: me.data.data.role ? me.data.data.role : 'GUEST',
+        supervisor: me.data.data.supervisor ? me.data.data.supervisor : 0
       })
     )
   }
 
   static logOut(dispatch: Dispatch) {
     dispatch(logOutReducer())
+  }
+
+  static async register(username: string, password: string) {
+    await this.callApi(AuthencationApi, 'register', username, password)
   }
 }

@@ -4,7 +4,7 @@ import { Assessment } from '../../api/assessment/types'
 
 export class AssessmentService extends BaseService {
   static async getAssessments() {
-    const response = await this.callApi(AssessmentApi, 'getAssessments')
+    const response = await this.callApi(AssessmentApi, 'getAllAssessment')
     return response.data
   }
 
