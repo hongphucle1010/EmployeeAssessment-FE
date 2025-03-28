@@ -12,14 +12,18 @@ export class AssessmentApi extends BaseApi {
   }
 
   static async getMyAssesment() {
-    return this.request<BackendResponse<Assessment[]>>('get', '/assessment/my')
+    return this.request<BackendResponse<Assessment[]>>('get', '/assessment/me')
   }
 
   static async createAssessment(data: Assessment) {
     return this.request('post', '/assessment', data)
   }
 
+  static async updateAssessment(id: number, data: Assessment) {
+    return this.request<BackendResponse<Assessment>>('put', `/assessment/${id}`, data)
+  }
+
   static async deleteAssessment(id: number) {
-    return this.request('delete', `/assessment/${id}`)
+    return this.request<BackendResponse<object>>('delete', `/assessment/${id}`)
   }
 }
