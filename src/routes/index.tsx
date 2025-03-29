@@ -14,6 +14,7 @@ import MyAssessmentsPage from '../pages/MyAssessmentsPage'
 
 import HomePage from '../pages/HomePage'
 import Profile from '../pages/Profile'
+import SuperviseeAssessmentsPage from '../pages/SuperviseeAssessmentPage'
 
 
 const Router: React.FC = () => {
@@ -40,7 +41,7 @@ const Router: React.FC = () => {
       path: '/assessment/supervisee/:id',
       element: (
         <MainLayout>
-          <SuperviseeAssessmentPage />
+          <SuperviseeAssessmentsPage />
         </MainLayout>
       )
     },
