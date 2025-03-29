@@ -11,6 +11,7 @@ import LogOut from '../pages/LogOutPage'
 import TestingPage from '../pages/TestingPage/TestingPage'
 import LoggedIn from '../pages/LoginPage/LoggedIn'
 import MyAssessmentsPage from '../pages/MyAssessmentsPage'
+import HomePage from '../pages/HomePage'
 import Profile from '../pages/Profile'
 
 const Router: React.FC = () => {
@@ -60,7 +61,16 @@ const Router: React.FC = () => {
       path: '/',
       element: (
         <MainLayout>
-          <div>Home</div>
+          <HomePage />
+        </MainLayout>
+      ),
+      errorElement: <ErrorPage />
+    },
+    {
+      path: '/profile',
+      element: (
+        <MainLayout>
+          <Profile />
         </MainLayout>
       ),
       errorElement: <ErrorPage />
@@ -89,9 +99,9 @@ const Router: React.FC = () => {
     {
       path: '/',
       element: (
-        <div>
-          <h1>Home</h1>
-        </div>
+        <MainLayout>
+          <HomePage />
+        </MainLayout>
       ),
       errorElement: <ErrorPage />
     }
@@ -102,7 +112,7 @@ const Router: React.FC = () => {
       path: '/',
       element: (
         <MainLayout>
-          <div>Home</div>
+          <HomePage />
         </MainLayout>
       ),
       errorElement: <ErrorPage />
