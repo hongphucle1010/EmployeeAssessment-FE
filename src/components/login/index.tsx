@@ -4,8 +4,8 @@ import { useForm, SubmitHandler } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { AuthenticationService } from '../../services/authentication'
 import { useDispatch } from 'react-redux'
-// import { MockService } from '../../services'
 import { Bounce, toast } from 'react-toastify'
+import { Spinner } from 'flowbite-react'
 
 interface ILoginForm {
   username: string
@@ -101,8 +101,9 @@ const LoginForm = () => {
         <button
           disabled={isSubmitting}
           type='submit'
-          className='w-full p-2 rounded-lg text-base font-semibold text-white bg-blue-600 disabled:bg-grey hover:bg-opacity-80'
+          className='w-full p-2 rounded-lg text-base font-semibold text-white bg-blue-600 disabled:bg-grey hover:bg-opacity-80 flex items-center justify-center gap-2'
         >
+          {isSubmitting && <Spinner size='sm' />}
           {isSubmitting ? 'Logging in...' : 'Login'}
         </button>
       </div>

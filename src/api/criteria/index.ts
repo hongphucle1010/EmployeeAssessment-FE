@@ -14,4 +14,12 @@ export class CriteriaApi extends BaseApi {
   static async createCriteria(data: Omit<Criteria, 'id'>) {
     return this.request<BackendResponse<Criteria>>('post', '/criteria', data)
   }
+
+  static async updateCriteria(id: number, data: Criteria) {
+    return this.request<BackendResponse<Criteria>>('put', `/criteria/${id}`, data)
+  }
+
+  static async deleteCriteria(id: number) {
+    return this.request<BackendResponse<object>>('delete', `/criteria/${id}`)
+  }
 }
