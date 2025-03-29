@@ -386,7 +386,7 @@ const SuperviseeAssessmentsPage = () => {
     } else {
       // Nếu chưa tồn tại, thêm mới vào danh sách
       try {
-        AssessmentService.createAssessment(newAssessment)
+        //AssessmentService.createAssessment(newAssessment)
       } catch (error) {
         console.error('Error creating assessment:', error)
       }
