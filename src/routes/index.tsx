@@ -11,7 +11,10 @@ import LogOut from '../pages/LogOutPage'
 import TestingPage from '../pages/TestingPage/TestingPage'
 import LoggedIn from '../pages/LoginPage/LoggedIn'
 import MyAssessmentsPage from '../pages/MyAssessmentsPage'
-import SuperviseeAssessmentPage from '../pages/SuperviseeAssessmentPage'
+
+import HomePage from '../pages/HomePage'
+import Profile from '../pages/Profile'
+
 
 const Router: React.FC = () => {
   const role = useSelector((state: RootState) => state.user.value.role)
@@ -68,7 +71,25 @@ const Router: React.FC = () => {
       path: '/',
       element: (
         <MainLayout>
-          <div>Home</div>
+          <HomePage />
+        </MainLayout>
+      ),
+      errorElement: <ErrorPage />
+    },
+    {
+      path: '/profile',
+      element: (
+        <MainLayout>
+          <Profile />
+        </MainLayout>
+      ),
+      errorElement: <ErrorPage />
+    },
+    {
+      path: '/profile',
+      element: (
+        <MainLayout>
+          <Profile />
         </MainLayout>
       ),
       errorElement: <ErrorPage />
@@ -88,9 +109,9 @@ const Router: React.FC = () => {
     {
       path: '/',
       element: (
-        <div>
-          <h1>Home</h1>
-        </div>
+        <MainLayout>
+          <HomePage />
+        </MainLayout>
       ),
       errorElement: <ErrorPage />
     }
@@ -101,7 +122,7 @@ const Router: React.FC = () => {
       path: '/',
       element: (
         <MainLayout>
-          <div>Home</div>
+          <div>Please login to access the application.</div>
         </MainLayout>
       ),
       errorElement: <ErrorPage />
