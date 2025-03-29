@@ -76,12 +76,14 @@ const AssessmentSchema = yup.object().shape({
     .min(0, 'Score must be at least 0')
     .max(100, 'Score must be at most 100')
     .required('Score is required'),
-  comment: yup.string().required('Comment is required')
+  comment: yup.string().required('Comment is required'),
+  criteriaId: yup.number().required('Criteria ID is required')
 })
 
 type EditAssessmentForm = {
   score: number
   comment: string
+  criteriaId: number
 }
 
 interface EditAssessmentModalProps {
@@ -100,6 +102,7 @@ const EditAssessmentModal: React.FC<EditAssessmentModalProps> = ({ open, setOpen
     resolver: yupResolver(AssessmentSchema),
     defaultValues: {
       score: assessment.score,
+      criteriaId: assessment.criteriaId,
       comment: assessment.comment
     }
   })
@@ -176,11 +179,148 @@ const EditAssessmentModal: React.FC<EditAssessmentModalProps> = ({ open, setOpen
   )
 }
 
+export type AddAssessmentForm = {
+  score: number
+  comment: string
+  criteriaId: number
+}
+
+interface AddAssessmentModalProps {
+  open: boolean
+  setOpen: (open: boolean) => void
+  onAdd: (newAssessment: Assessment) => void
+  criteriaList: Criteria[]
+  userId: number
+}
+
+const AddAssessmentModal: React.FC<AddAssessmentModalProps> = ({ open, setOpen, onAdd, criteriaList, userId }) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset
+  } = useForm<AddAssessmentForm>({
+    resolver: yupResolver(AssessmentSchema),
+    defaultValues: {
+      score: 0,
+      comment: '',
+      // Nếu danh sách tiêu chí có phần tử, mặc định chọn phần tử đầu tiên
+      criteriaId: criteriaList[0]?.id || 0
+    }
+  })
+
+  const [loading, setLoading] = useState(false)
+
+  /*export interface Assessment {
+  id: number
+  userId: number
+  criteriaId: number
+  score: number
+  comment: string
+  updatedAt: string
+}
+*/
+
+  const onSubmit: SubmitHandler<AddAssessmentForm> = async (data) => {
+    setLoading(true)
+    try {
+      // Gọi API tạo mới assessment (giả sử hàm này trả về assessment mới)
+      const newAssessmentData = { ...data, userId: userId, updatedAt: new Date().toISOString() }
+      const response = (await AssessmentService.createAssessment(newAssessmentData)) as { data: Assessment }
+      const newAssessment = response.data
+      onAdd(newAssessment)
+      reset()
+      setOpen(false)
+    } catch (error) {
+      console.error('Error creating assessment:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <Modal show={open} onClose={() => setOpen(false)}>
+      <Modal.Header>Add Assessment</Modal.Header>
+      <Modal.Body>
+        <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-4'>
+          {/* Input Score */}
+          <div>
+            <label htmlFor='addAssessmentScore' className='font-semibold text-sm'>
+              Score:
+            </label>
+            <input
+              id='addAssessmentScore'
+              type='number'
+              className='w-full p-2 mt-1 border border-gray-300 rounded-md'
+              {...register('score')}
+            />
+            {errors.score && <p className='text-red-500 text-xs'>{errors.score.message}</p>}
+          </div>
+          {/* Input Comment */}
+          <div>
+            <label htmlFor='addAssessmentComment' className='font-semibold text-sm'>
+              Comment:
+            </label>
+            <input
+              id='addAssessmentComment'
+              type='text'
+              className='w-full p-2 mt-1 border border-gray-300 rounded-md'
+              {...register('comment')}
+            />
+            {errors.comment && <p className='text-red-500 text-xs'>{errors.comment.message}</p>}
+          </div>
+          {/* Select Criteria */}
+          <div>
+            <label htmlFor='addAssessmentCriteria' className='font-semibold text-sm'>
+              Criteria:
+            </label>
+            <select
+              id='addAssessmentCriteria'
+              className='w-full p-2 mt-1 border border-gray-300 rounded-md'
+              {...register('criteriaId')}
+            >
+              {criteriaList.map((criteria) => (
+                <option key={criteria.id} value={criteria.id}>
+                  {criteria.name}
+                </option>
+              ))}
+            </select>
+            {errors.criteriaId && <p className='text-red-500 text-xs'>{errors.criteriaId.message}</p>}
+          </div>
+          {/* Nút xử lý */}
+          <div className='flex justify-end gap-3'>
+            <button
+              type='button'
+              onClick={() => {
+                reset()
+                setOpen(false)
+              }}
+              disabled={loading}
+              className='px-3 py-2 rounded-md bg-gray-300 text-white'
+            >
+              Cancel
+            </button>
+            <button
+              type='submit'
+              disabled={loading}
+              className='px-3 py-2 rounded-md bg-blue-600 text-white flex items-center gap-2'
+            >
+              {loading && <Spinner size='sm' />}
+              Save
+            </button>
+          </div>
+        </form>
+      </Modal.Body>
+    </Modal>
+  )
+}
+
 const SuperviseeAssessmentsPage = () => {
   const [assessmentList, setAssessmentList] = useState<Assessment[]>([])
   const [criteriaList, setCriteriaList] = useState<Criteria[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [editAssessment, setEditAssessment] = useState<Assessment | null>(null)
+  const [addAssessment, setAddAssessment] = useState<Assessment | null>(null)
   const [supervisee, setSuperviseeName] = useState<string>('Unknown')
   const { id } = useParams<{ id: string }>()
   const sId = Number(id)
@@ -232,10 +372,36 @@ const SuperviseeAssessmentsPage = () => {
     setAssessmentList((prev) => prev.map((item) => (item.id === updated.id ? updated : item)))
   }
 
+  const handleAdd = () => {
+    setAddAssessment({ id: 0, criteriaId: 0, score: 0, comment: '', updatedAt: '', userId: sId })
+  }
+
+  // Hàm thêm assessment mới vào danh sách
+  const addAssessmentToList = (newAssessment: Assessment) => {
+    // Kiểm tra xem assessment đã tồn tại trong danh sách chưa
+    const existingAssessment = assessmentList.find((item) => item.id === newAssessment.id)
+    if (existingAssessment) {
+      // Nếu đã tồn tại, cập nhật nó
+      setAssessmentList((prev) => prev.map((item) => (item.id === newAssessment.id ? newAssessment : item)))
+    } else {
+      // Nếu chưa tồn tại, thêm mới vào danh sách
+      try {
+        AssessmentService.createAssessment(newAssessment)
+      } catch (error) {
+        console.error('Error creating assessment:', error)
+      }
+      setAssessmentList((prev) => [...prev, newAssessment])
+    }
+  }
   return (
     <div className='flex flex-col gap-4 p-5'>
       <p className='font-semibold text-2xl'>Assessments: {supervisee}</p>
-
+      <button
+        className='px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 w-[100px]'
+        onClick={() => handleAdd()}
+      >
+        Add
+      </button>
       {loading ? (
         <div className='text-center mt-5'>
           <div role='status'>
@@ -303,10 +469,19 @@ const SuperviseeAssessmentsPage = () => {
           updateAssessment={updateAssessmentInList}
         />
       )}
+      {addAssessment && (
+        <AddAssessmentModal
+          open={true}
+          setOpen={(open) => {
+            if (!open) setAddAssessment(null)
+          }}
+          onAdd={addAssessmentToList}
+          criteriaList={criteriaList}
+          userId={sId}
+        />
+      )}
     </div>
   )
 }
-
-
 
 export default SuperviseeAssessmentsPage
