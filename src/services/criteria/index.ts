@@ -17,4 +17,14 @@ export class CriteriaService extends BaseService {
     const response = await this.callApi(CriteriaApi, 'createCriteria', data)
     return response.data
   }
+
+  static async updateCriteria(id: number, data: Criteria) {
+    const response = await this.callApi(CriteriaApi, 'updateCriteria', id, data)
+    return response.data
+  }
+
+  static async deleteCriteria(id: number) {
+    const response = await this.callApi(CriteriaApi, 'deleteCriteria', id)
+    return response.data
+  }
 }

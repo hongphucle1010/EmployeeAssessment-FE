@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Modal, Spinner } from 'flowbite-react'
 
 import * as yup from 'yup'
 import { useForm, SubmitHandler } from 'react-hook-form'
@@ -17,23 +18,127 @@ const CriteriaItem = ({ title, item }: { title: string; item: string }) => {
   )
 }
 
-const CriteriaList = (props: Criteria) => {
+interface CriteriaListProps extends Criteria {
+  setCriteriaList: React.Dispatch<React.SetStateAction<Criteria[]>>
+}
+
+const EditCriteriaModal = ({
+  open,
+  setOpen,
+  criteria,
+  setCriteriaList
+}: {
+  open: boolean
+  setOpen: (open: boolean) => void
+  criteria: Criteria
+  setCriteriaList: React.Dispatch<React.SetStateAction<Criteria[]>>
+}) => {
+  const { register, handleSubmit } = useForm<Omit<Criteria, 'id'>>({
+    resolver: yupResolver(CriteriaSchema),
+    defaultValues: {
+      name: criteria.name,
+      description: criteria.description
+    }
+  })
+  const [loading, setLoading] = useState(false)
+
+  const onSubmit: SubmitHandler<Omit<Criteria, 'id'>> = async (data) => {
+    setLoading(true)
+    try {
+      const response = await CriteriaService.updateCriteria(criteria.id, { ...criteria, ...data })
+      const updatedCriteria = response.data
+      setCriteriaList((prev) => prev.map((item) => (item.id === criteria.id ? updatedCriteria : item)))
+      setOpen(false)
+    } catch (error) {
+      console.error('Failed to update criteria', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <Modal show={open} onClose={() => setOpen(false)}>
+      <Modal.Header>Edit Criteria</Modal.Header>
+      <Modal.Body>
+        <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-4'>
+          <div>
+            <label className='font-semibold text-sm' htmlFor='EditCriteriaName'>
+              Name:
+            </label>
+            <input
+              id='EditCriteriaName'
+              type='text'
+              className='w-full p-2 mt-1 border border-gray-300 rounded-md'
+              {...register('name')}
+            />
+          </div>
+          <div>
+            <label className='font-semibold text-sm' htmlFor='EditCriteriaDesc'>
+              Description:
+            </label>
+            <input
+              id='EditCriteriaDesc'
+              type='text'
+              className='w-full p-2 mt-1 border border-gray-300 rounded-md'
+              {...register('description')}
+            />
+          </div>
+          <div className='flex justify-end gap-3'>
+            <button
+              type='button'
+              className='px-3 py-2 rounded-md bg-gray-300 text-white'
+              onClick={() => setOpen(false)}
+              disabled={loading}
+            >
+              Cancel
+            </button>
+            <button
+              type='submit'
+              className='px-3 py-2 rounded-md bg-blue-600 text-white flex items-center gap-2'
+              disabled={loading}
+            >
+              {loading && <Spinner size='sm' />}
+              Save
+            </button>
+          </div>
+        </form>
+      </Modal.Body>
+    </Modal>
+  )
+}
+
+const CriteriaList = (props: CriteriaListProps) => {
+  const [openEditModal, setOpenEditModal] = useState(false)
+
   return (
     <div className='w-full p-5 flex flex-col gap-4 rounded-lg border border-blue-600'>
       <div className='w-full flex flex-row items-center justify-between'>
         <span className='font-semibold text-base p-2 rounded-lg bg-blue-200'>{props.name}</span>
         <div className='flex flex-row items-center gap-2'>
-          <button className='hover:underline' onClick={() => {}}>
+          <button className='hover:underline' onClick={() => setOpenEditModal(true)}>
             Edit
           </button>
           {'|'}
-          <button className='hover:underline' onClick={() => {}}>
+          <button
+            className='hover:underline'
+            onClick={() => {
+              CriteriaService.deleteCriteria(props.id).then((response) => {
+                console.log('Criteria deleted', response)
+                props.setCriteriaList((prev) => prev.filter((item) => item.id !== props.id))
+              })
+            }}
+          >
             Delete
           </button>
         </div>
       </div>
-      {/* <CriteriaItem title="Name" item={props.name} /> */}
       <CriteriaItem title='Description' item={props.description} />
+      <EditCriteriaModal
+        open={openEditModal}
+        setOpen={setOpenEditModal}
+        criteria={props}
+        setCriteriaList={props.setCriteriaList}
+      />
     </div>
   )
 }
@@ -46,7 +151,15 @@ const CriteriaSchema = yup.object().shape({
   description: yup.string().required('Description is required')
 })
 
-const NewCriteriaListForm = ({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) => {
+const NewCriteriaListForm = ({
+  open,
+  setOpen,
+  setCriteriaList
+}: {
+  open: boolean
+  setOpen: (open: boolean) => void
+  setCriteriaList: React.Dispatch<React.SetStateAction<Criteria[]>>
+}) => {
   const { register, handleSubmit } = useForm<CriteriaForm>({
     resolver: yupResolver(CriteriaSchema),
     defaultValues: {
@@ -54,14 +167,19 @@ const NewCriteriaListForm = ({ open, setOpen }: { open: boolean; setOpen: (open:
       description: ''
     }
   })
+  const [loading, setLoading] = useState(false)
 
   const onSubmit: SubmitHandler<CriteriaForm> = async (data) => {
+    setLoading(true)
     try {
       const response = await CriteriaService.createCriteria(data)
-      console.log('Criteria created', response)
+      const newCriteria = response.data
+      setCriteriaList((prev) => [...prev, newCriteria])
       setOpen(!open)
     } catch (error) {
-      console.error(error)
+      console.error('Failed to create criteria', error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -103,10 +221,16 @@ const NewCriteriaListForm = ({ open, setOpen }: { open: boolean; setOpen: (open:
               e.preventDefault()
               setOpen(!open)
             }}
+            disabled={loading}
           >
             Cancel
           </button>
-          <button type='submit' className='px-3 py-2 rounded-md bg-blue-600 text-white'>
+          <button
+            type='submit'
+            className='px-3 py-2 rounded-md bg-blue-600 text-white flex items-center gap-2'
+            disabled={loading}
+          >
+            {loading && <Spinner size='sm' />}
             Save
           </button>
         </div>
@@ -117,17 +241,19 @@ const NewCriteriaListForm = ({ open, setOpen }: { open: boolean; setOpen: (open:
 
 const CriteriaPage = () => {
   const [openNewForm, setOpenNewForm] = useState(false)
-
   const [criteriaList, setCriteriaList] = useState<Criteria[]>([])
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const fetchCriteria = async () => {
+      setLoading(true)
       try {
         const response = await CriteriaService.getCriterias()
-        console.log('Criteria fetched', response)
         setCriteriaList(response.data)
       } catch (error) {
         console.error('Failed to fetch criteria', error)
+      } finally {
+        setLoading(false)
       }
     }
 
@@ -137,12 +263,26 @@ const CriteriaPage = () => {
   return (
     <div className='flex flex-col items-start gap-4 text-black p-5'>
       <span className='font-semibold text-2xl'>My Criteria Collection</span>
-      {criteriaList.map((item) => (
-        <CriteriaList key={item.id} id={item.id} name={item.name} description={item.description} />
-      ))}
-      {openNewForm && <NewCriteriaListForm open={openNewForm} setOpen={setOpenNewForm} />}
+      {loading ? (
+        <div className='flex justify-center items-center w-full'>
+          <Spinner size='lg' />
+        </div>
+      ) : (
+        criteriaList.map((item) => (
+          <CriteriaList
+            key={item.id}
+            id={item.id}
+            name={item.name}
+            description={item.description}
+            setCriteriaList={setCriteriaList}
+          />
+        ))
+      )}
+      {openNewForm && (
+        <NewCriteriaListForm open={openNewForm} setOpen={setOpenNewForm} setCriteriaList={setCriteriaList} />
+      )}
       <button
-        disabled={openNewForm === true}
+        disabled={openNewForm === true || loading}
         className='w-full p-5 rounded-lg border-dashed border border-blue-600 text-blue-600 disabled:border-gray-400 disabled:text-gray-400'
         onClick={() => {
           setOpenNewForm(!openNewForm)
