@@ -382,7 +382,7 @@ const SuperviseeAssessmentsPage = () => {
     const existingAssessment = assessmentList.find((item) => item.id === newAssessment.id)
     if (existingAssessment) {
       // Nếu đã tồn tại, cập nhật nó
-      setAssessmentList((prev) => prev.map((item) => (item.id === newAssessment.id ? newAssessment : item)))
+      //setAssessmentList((prev) => prev.map((item) => (item.id === newAssessment.id ? newAssessment : item)))
     } else {
       // Nếu chưa tồn tại, thêm mới vào danh sách
       try {
