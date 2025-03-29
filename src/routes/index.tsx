@@ -10,6 +10,8 @@ import ErrorPage from '../pages/ErrorPage/ErrorPage'
 import LogOut from '../pages/LogOutPage'
 import TestingPage from '../pages/TestingPage/TestingPage'
 import LoggedIn from '../pages/LoginPage/LoggedIn'
+import MyAssessmentsPage from '../pages/MyAssessmentsPage'
+import SuperviseeAssessmentPage from '../pages/SuperviseeAssessmentPage'
 
 const Router: React.FC = () => {
   const role = useSelector((state: RootState) => state.user.value.role)
@@ -32,6 +34,14 @@ const Router: React.FC = () => {
       )
     },
     {
+      path: '/assessment/supervisee/:id',
+      element: (
+        <MainLayout>
+          <SuperviseeAssessmentPage />
+        </MainLayout>
+      )
+    },
+    {
       path: '/assessment-criteria',
       element: (
         <MainLayout>
@@ -42,6 +52,14 @@ const Router: React.FC = () => {
     {
       path: '/logout',
       element: <LogOut />
+    },
+    {
+      path: '/assessment',
+      element: (
+        <MainLayout>
+          <MyAssessmentsPage />
+        </MainLayout>
+      )
     }
   ]
   const employeeRoutes = [
