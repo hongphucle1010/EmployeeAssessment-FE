@@ -83,9 +83,10 @@ const MyAssessmentsPage = () => {
                 </div>
             ) : (
                 <>
-                    {assessmentList.map((item, index) => (
+                    {assessmentList.map((item) => (
                         <AssessmentItem
-                            key={index}
+                            key={item.id}
+                            id={item.id}
                             comment={item.comment}
                             score={item.score}
                             criteriaId={item.criteriaId}
