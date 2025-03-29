@@ -1,6 +1,7 @@
 export interface Assessment {
-  userId: number
+  id: number
   criteriaId: number
   score: number
   comment: string
+  updatedAt: string
 }
