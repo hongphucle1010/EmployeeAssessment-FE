@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Modal } from 'flowbite-react'
+import { Modal, Spinner } from 'flowbite-react'
 
 import * as yup from 'yup'
 import { useForm, SubmitHandler } from 'react-hook-form'
@@ -40,15 +40,19 @@ const EditCriteriaModal = ({
       description: criteria.description
     }
   })
+  const [loading, setLoading] = useState(false)
 
   const onSubmit: SubmitHandler<Omit<Criteria, 'id'>> = async (data) => {
+    setLoading(true)
     try {
       const response = await CriteriaService.updateCriteria(criteria.id, { ...criteria, ...data })
-      const updatedCriteria = response.data // Extract the data property
+      const updatedCriteria = response.data
       setCriteriaList((prev) => prev.map((item) => (item.id === criteria.id ? updatedCriteria : item)))
       setOpen(false)
     } catch (error) {
       console.error('Failed to update criteria', error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -84,10 +88,16 @@ const EditCriteriaModal = ({
               type='button'
               className='px-3 py-2 rounded-md bg-gray-300 text-white'
               onClick={() => setOpen(false)}
+              disabled={loading}
             >
               Cancel
             </button>
-            <button type='submit' className='px-3 py-2 rounded-md bg-blue-600 text-white'>
+            <button
+              type='submit'
+              className='px-3 py-2 rounded-md bg-blue-600 text-white flex items-center gap-2'
+              disabled={loading}
+            >
+              {loading && <Spinner size='sm' />}
               Save
             </button>
           </div>
@@ -141,7 +151,15 @@ const CriteriaSchema = yup.object().shape({
   description: yup.string().required('Description is required')
 })
 
-const NewCriteriaListForm = ({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) => {
+const NewCriteriaListForm = ({
+  open,
+  setOpen,
+  setCriteriaList
+}: {
+  open: boolean
+  setOpen: (open: boolean) => void
+  setCriteriaList: React.Dispatch<React.SetStateAction<Criteria[]>>
+}) => {
   const { register, handleSubmit } = useForm<CriteriaForm>({
     resolver: yupResolver(CriteriaSchema),
     defaultValues: {
@@ -149,14 +167,19 @@ const NewCriteriaListForm = ({ open, setOpen }: { open: boolean; setOpen: (open:
       description: ''
     }
   })
+  const [loading, setLoading] = useState(false)
 
   const onSubmit: SubmitHandler<CriteriaForm> = async (data) => {
+    setLoading(true)
     try {
       const response = await CriteriaService.createCriteria(data)
-      console.log('Criteria created', response)
+      const newCriteria = response.data
+      setCriteriaList((prev) => [...prev, newCriteria])
       setOpen(!open)
     } catch (error) {
-      console.error(error)
+      console.error('Failed to create criteria', error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -198,10 +221,16 @@ const NewCriteriaListForm = ({ open, setOpen }: { open: boolean; setOpen: (open:
               e.preventDefault()
               setOpen(!open)
             }}
+            disabled={loading}
           >
             Cancel
           </button>
-          <button type='submit' className='px-3 py-2 rounded-md bg-blue-600 text-white'>
+          <button
+            type='submit'
+            className='px-3 py-2 rounded-md bg-blue-600 text-white flex items-center gap-2'
+            disabled={loading}
+          >
+            {loading && <Spinner size='sm' />}
             Save
           </button>
         </div>
@@ -212,17 +241,19 @@ const NewCriteriaListForm = ({ open, setOpen }: { open: boolean; setOpen: (open:
 
 const CriteriaPage = () => {
   const [openNewForm, setOpenNewForm] = useState(false)
-
   const [criteriaList, setCriteriaList] = useState<Criteria[]>([])
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const fetchCriteria = async () => {
+      setLoading(true)
       try {
         const response = await CriteriaService.getCriterias()
-        console.log('Criteria fetched', response)
         setCriteriaList(response.data)
       } catch (error) {
         console.error('Failed to fetch criteria', error)
+      } finally {
+        setLoading(false)
       }
     }
 
@@ -232,18 +263,26 @@ const CriteriaPage = () => {
   return (
     <div className='flex flex-col items-start gap-4 text-black p-5'>
       <span className='font-semibold text-2xl'>My Criteria Collection</span>
-      {criteriaList.map((item) => (
-        <CriteriaList
-          key={item.id}
-          id={item.id}
-          name={item.name}
-          description={item.description}
-          setCriteriaList={setCriteriaList}
-        />
-      ))}
-      {openNewForm && <NewCriteriaListForm open={openNewForm} setOpen={setOpenNewForm} />}
+      {loading ? (
+        <div className='flex justify-center items-center w-full'>
+          <Spinner size='lg' />
+        </div>
+      ) : (
+        criteriaList.map((item) => (
+          <CriteriaList
+            key={item.id}
+            id={item.id}
+            name={item.name}
+            description={item.description}
+            setCriteriaList={setCriteriaList}
+          />
+        ))
+      )}
+      {openNewForm && (
+        <NewCriteriaListForm open={openNewForm} setOpen={setOpenNewForm} setCriteriaList={setCriteriaList} />
+      )}
       <button
-        disabled={openNewForm === true}
+        disabled={openNewForm === true || loading}
         className='w-full p-5 rounded-lg border-dashed border border-blue-600 text-blue-600 disabled:border-gray-400 disabled:text-gray-400'
         onClick={() => {
           setOpenNewForm(!openNewForm)
