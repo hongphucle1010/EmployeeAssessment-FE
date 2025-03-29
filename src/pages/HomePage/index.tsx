@@ -68,7 +68,7 @@ const HomePage = () => {
       try {
         setLoading(true)
         const res = await AuthenticationService.getMe()
-        setUser(res.data.data)
+        setUser(res.data)
       } catch (e) {
         console.error(e)
       } finally {
