@@ -10,4 +10,8 @@ export class SuperviseeApi extends BaseApi {
   static async getSuperviseeById(id: number) {
     return this.request<BackendResponse<GetMePayload>>('get', `/supervisee/${id}`)
   }
+
+  /*static async getSuperviser(superviserID: number) {
+    return this.request<BackendResponse<GetMePayload>>('get', `/user/${superviserID}`)
+  }*/
 }

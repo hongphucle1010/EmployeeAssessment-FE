@@ -20,7 +20,7 @@ export class AuthenticationService extends BaseService {
     const me = await this.callApi(AuthencationApi, 'getMe')
     dispatch(
       logInReducer({
-        id: me.data.data.id,
+        id: me.data.data.id.toString(),
         name: me.data.data.username,
         role: me.data.data.role ? me.data.data.role : 'GUEST',
         supervisor: me.data.data.supervisor ? me.data.data.supervisor : 0

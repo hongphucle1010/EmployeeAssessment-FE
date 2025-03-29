@@ -4,4 +4,5 @@ export interface Assessment {
   criteriaId: number
   score: number
   comment: string
+  updatedAt: string
 }

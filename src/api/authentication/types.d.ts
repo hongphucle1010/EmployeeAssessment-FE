@@ -3,7 +3,7 @@ export interface LogInPayload {
 }
 
 export interface GetMePayload {
-  id: string
+  id: number
   username: string
   role: 'ADMIN' | 'USER' | ''
   supervisor: number
