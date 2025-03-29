@@ -11,6 +11,7 @@ import LogOut from '../pages/LogOutPage'
 import TestingPage from '../pages/TestingPage/TestingPage'
 import LoggedIn from '../pages/LoginPage/LoggedIn'
 import MyAssessmentsPage from '../pages/MyAssessmentsPage'
+import Profile from '../pages/Profile'
 
 const Router: React.FC = () => {
   const role = useSelector((state: RootState) => state.user.value.role)
@@ -60,6 +61,15 @@ const Router: React.FC = () => {
       element: (
         <MainLayout>
           <div>Home</div>
+        </MainLayout>
+      ),
+      errorElement: <ErrorPage />
+    },
+    {
+      path: '/profile',
+      element: (
+        <MainLayout>
+          <Profile />
         </MainLayout>
       ),
       errorElement: <ErrorPage />

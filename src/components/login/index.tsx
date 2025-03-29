@@ -6,6 +6,8 @@ import { AuthenticationService } from '../../services/authentication'
 import { useDispatch } from 'react-redux'
 import { Bounce, toast } from 'react-toastify'
 import { Spinner } from 'flowbite-react'
+import { AxiosError } from 'axios'
+import { BackendFailureResponse } from '../../api/types'
 
 interface ILoginForm {
   username: string
@@ -37,7 +39,7 @@ const LoginForm = () => {
       await AuthenticationService.logIn(data.username, data.password, dispatch)
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      toast.error(`Đăng nhập thất bại! ${(error as any)?.message}`, {
+      toast.error(`Đăng nhập thất bại! ${(error as AxiosError<BackendFailureResponse>).response?.data.message}`, {
         position: 'bottom-right',
         autoClose: 5000,
         hideProgressBar: false,
