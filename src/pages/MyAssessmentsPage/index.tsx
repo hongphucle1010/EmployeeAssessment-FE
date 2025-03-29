@@ -94,7 +94,6 @@ const MyAssessmentsPage = () => {
                         />
                     ))}
                 </>
-
             )}
         </div>
     )

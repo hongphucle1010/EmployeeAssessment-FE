@@ -30,4 +30,8 @@ export class AuthenticationService extends BaseService {
   static async register(username: string, password: string) {
     await this.callApi(AuthencationApi, 'register', username, password)
   }
+
+  static async getMe() {
+    return await this.callApi(AuthencationApi, 'getMe')
+  }
 }
