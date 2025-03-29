@@ -112,7 +112,7 @@ const Router: React.FC = () => {
       path: '/',
       element: (
         <MainLayout>
-          <HomePage />
+          <div>Please login to access the application.</div>
         </MainLayout>
       ),
       errorElement: <ErrorPage />
