@@ -5,6 +5,11 @@ import { setAccessToken } from '../../lib/helper/authentication'
 import { logInReducer, logOutReducer } from '../../lib/redux/reducers/userState'
 
 export class AuthenticationService extends BaseService {
+  static async getMe() {
+    const response = await this.callApi(AuthencationApi, 'getMe')
+    return response.data
+  }
+
   static async logIn(username: string, password: string, dispatch: Dispatch) {
     // Log in
     const response = await this.callApi(AuthencationApi, 'logIn', username, password)

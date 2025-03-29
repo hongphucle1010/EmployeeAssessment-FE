@@ -3,3 +3,8 @@ export interface BackendResponse<T> {
   message: string
   data: T
 }
+
+export interface BackendFailureResponse {
+  status: number
+  message: string
+}
