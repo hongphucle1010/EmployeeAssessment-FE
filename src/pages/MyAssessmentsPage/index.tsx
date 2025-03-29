@@ -6,11 +6,12 @@ import { CriteriaService } from '../../services/criteria'
 
 type AssessmentItemProps = Omit<Assessment, 'userId'> & { criteriaName: string }
 
-const AssessmentItem = ({ criteriaName, score, comment }: AssessmentItemProps) => {
+const AssessmentItem = ({ criteriaName, score, comment, updatedAt }: AssessmentItemProps) => {
   return (
     <div className='w-full p-5 flex flex-col gap-4 rounded-lg border border-blue-600'>
       <div className='w-full flex flex-row items-center justify-between'>
         <span className='font-semibold text-base p-2 rounded-lg bg-blue-200'>{criteriaName}</span>
+        <span className='text-sm text-gray-500'>{new Date(updatedAt).toLocaleString()}</span> {/* Format the date */}
       </div>
       <div className='w-full flex flex-row items-center gap-2'>
         <span className='font-semibold w-1/12'>{'Score: '}</span>
@@ -19,7 +20,6 @@ const AssessmentItem = ({ criteriaName, score, comment }: AssessmentItemProps) =
             className='h-5 bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-2xl flex flex-col items-center justify-center'
             style={{ width: `${((score > 0 ? score : 0) / 100) * 100}%` }}
           >
-            {/* {`${(score) / 100 * 100}`} % */}
             {score}
           </div>
         </div>
@@ -93,6 +93,7 @@ const MyAssessmentsPage = () => {
               comment={item.comment}
               score={item.score}
               criteriaId={item.criteriaId}
+              updatedAt={item.updatedAt} // Pass updatedAt
               criteriaName={criteriaList.find((criteria) => criteria.id === item.criteriaId)?.name || 'Unknown'}
             />
           ))}
