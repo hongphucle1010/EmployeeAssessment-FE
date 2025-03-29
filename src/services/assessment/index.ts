@@ -13,7 +13,7 @@ export class AssessmentService extends BaseService {
     return response.data
   }
 
-  static async createAssessment(data: Assessment) {
+  static async createAssessment(data: Omit<Assessment,'id'>) {
     const response = await this.callApi(AssessmentApi, 'createAssessment', data)
     return response.data
   }

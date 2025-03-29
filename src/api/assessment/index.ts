@@ -19,7 +19,7 @@ export class AssessmentApi extends BaseApi {
     return this.request<BackendResponse<Assessment[]>>('get', `/assessment/supervisee/${id}`)
   }
 
-  static async createAssessment(data: Assessment) {
+  static async createAssessment(data: Omit<Assessment, 'id'>) {
     return this.request('post', '/assessment', data)
   }
 
