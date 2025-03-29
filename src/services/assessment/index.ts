@@ -22,4 +22,9 @@ export class AssessmentService extends BaseService {
     const response = await this.callApi(AssessmentApi, 'deleteAssessment', id)
     return response.data
   }
+
+  static async getMyAssessment() {
+    const response = await this.callApi(AssessmentApi, 'getMyAssesment')
+    return response.data
+  }
 }

@@ -12,7 +12,7 @@ export class AssessmentApi extends BaseApi {
   }
 
   static async getMyAssesment() {
-    return this.request<BackendResponse<Assessment[]>>('get', '/assessment/my')
+    return this.request<BackendResponse<Assessment[]>>('get', '/assessment/me')
   }
 
   static async createAssessment(data: Assessment) {
